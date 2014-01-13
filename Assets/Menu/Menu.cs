@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class Menu : MonoBehaviour
 {
+    public NetworkWrapper NetworkWrapper;
+
+    private HostData[] hostList;
+
     private const int ButtonNum = 4;
     private const float RowWidthRatio = 0.25f;
 
@@ -76,6 +80,8 @@ public class Menu : MonoBehaviour
 
     private void DrawCreateServer()
     {
+        NetworkWrapper.InitializeServer();
+
         Application.LoadLevel("Bang");
     }
 
@@ -85,6 +91,7 @@ public class Menu : MonoBehaviour
 
     private void RefreshServer()
     {
+        hostList = NetworkWrapper.PollHostList();
     }
 
     private void DrawSettings()
@@ -97,24 +104,32 @@ public class Menu : MonoBehaviour
             new Rect(scrollViewLeft, scrollViewTop, scrollViewWidth, scrollViewHeight), scrollPosition,
             new Rect(scrollViewLeft, scrollViewTop, scrollViewRealWidth, scrollViewRealHeight));
 
-        for (var i = 0; i < serverNum; ++i)
+        if (hostList != null)
         {
-            DrawServer(i);
+            for (var i = 0; i < hostList.Length; ++i)
+            {
+                DrawServer(hostList[i], i);
+            }
         }
 
         GUI.EndScrollView();
     }
 
-    private void DrawServer(int index)
+    private void DrawServer(HostData host, int index)
     {
         serverLeft = scrollViewLeft + scrollViewWidth / 12;
         serverTop = scrollViewTop + serverGridHeight / 12 + index * serverGridHeight;
         serverWidth = scrollViewWidth * 10 / 12;
         serverHeight = serverGridHeight * 10 / 12;
 
-        if (GUI.Button(new Rect(serverLeft, serverTop, serverWidth, serverHeight), "Server Created: No." + index))
+        if (GUI.Button(new Rect(serverLeft, serverTop, serverWidth, serverHeight), "Host:" + host))
         {
-            Application.LoadLevel("Bang");
+            Connect();
         }
+    }
+
+    private void Connect()
+    {
+        NetworkWrapper.Connect();
     }
 }
