@@ -122,7 +122,9 @@ public class Menu : MonoBehaviour
         serverWidth = scrollViewWidth * 10 / 12;
         serverHeight = serverGridHeight * 10 / 12;
 
-        if (GUI.Button(new Rect(serverLeft, serverTop, serverWidth, serverHeight), "Host:" + host))
+        if (GUI.Button(new Rect(serverLeft, serverTop, serverWidth, serverHeight),
+                       "Host:" + host.gameName + ", port: " + host.port + ", players: " + host.connectedPlayers +
+                       ", password: " + host.passwordProtected))
         {
             Connect();
         }
@@ -131,5 +133,24 @@ public class Menu : MonoBehaviour
     private void Connect()
     {
         NetworkWrapper.Connect();
+    }
+
+    private void OnConnectFail(object sender, ConnectFailEvent e)
+    {
+        
+    }
+
+    private void OnConnectSucceed(object sender, ConnectSucceedEvent e)
+    {
+        Application.LoadLevel("Bang");
+    }
+
+    void Awake()
+    {
+        NetworkWrapper.ClearHostList();
+        NetworkWrapper.RequestHostList();
+
+        NetworkWrapper.ConnectFail += OnConnectFail;
+        NetworkWrapper.ConnectSucceed += OnConnectSucceed;
     }
 }
