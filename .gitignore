@@ -16,6 +16,7 @@
 Library/
 Temp/
 obj/
+_ReSharper.TankWar/
 *.csproj
 *.pidb
 *.unityproj

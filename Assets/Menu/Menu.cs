@@ -147,6 +147,11 @@ public class Menu : MonoBehaviour
 
     void Awake()
     {
+        MasterServer.ipAddress = "127.0.0.1";
+        MasterServer.port = 23466;
+        Network.natFacilitatorIP = "127.0.0.1";
+        Network.natFacilitatorPort = 50005;
+
         NetworkWrapper.ClearHostList();
         NetworkWrapper.RequestHostList();
 
